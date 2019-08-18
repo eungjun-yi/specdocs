@@ -44,19 +44,19 @@ internal class SpecListGeneratorTest {
         ) to "# a\n\n## b\n\n### c\n\n#### Foo\n\n* test 2\n* test 3\n\n##### testgroup 1\n\n* subtest 1",
         listOf(
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.ArgumentTest]/[test-template:test(java.lang.String, java.lang.String)]/[test-template-invocation:#1]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.ArgumentTest]/[test-template:test(java.lang.String, java.lang.String)]/[test-template-invocation:#1]",
                 displayName = "[1] a, A"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.ArgumentTest]/[test-template:test(java.lang.String, java.lang.String)]/[test-template-invocation:#2]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.ArgumentTest]/[test-template:test(java.lang.String, java.lang.String)]/[test-template-invocation:#2]",
                 displayName = "[2] b, B"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.ArgumentTest]/[test-template:test(java.lang.String, java.lang.String)]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.ArgumentTest]/[test-template:test(java.lang.String, java.lang.String)]",
                 displayName = "test(String, String)"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.ArgumentTest]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.ArgumentTest]",
                 displayName = "ArgumentTest"
             )
         ) to """
@@ -66,13 +66,13 @@ internal class SpecListGeneratorTest {
 
             ### test
 
-            #### specter
+            #### specdocs
 
             ##### examples
 
-            ###### [ArgumentTest](/im/toss/test/specter/examples/ArgumentTest.kt)
+            ###### [ArgumentTest](/im/toss/test/specdocs/examples/ArgumentTest.kt)
 
-            ####### [test](/im/toss/test/specter/examples/ArgumentTest.kt#L24)
+            ####### [test](/im/toss/test/specdocs/examples/ArgumentTest.kt#L24)
 
             | String | String |
             | ------ | ------ |
@@ -81,11 +81,11 @@ internal class SpecListGeneratorTest {
             """.trimIndent(),
         listOf(
             TestItem(
-                "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecDescriptionTest]/[method:test]",
+                "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecDescriptionTest]/[method:test]",
                 "test"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecDescriptionTest]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecDescriptionTest]",
                 displayName = "SpecDescriptionTest"
             )
         ) to """
@@ -95,31 +95,31 @@ internal class SpecListGeneratorTest {
 
             ### test
 
-            #### specter
+            #### specdocs
 
             ##### examples
 
-            ###### [SpecDescriptionTest](/im/toss/test/specter/examples/SpecDescriptionTest.kt)
+            ###### [SpecDescriptionTest](/im/toss/test/specdocs/examples/SpecDescriptionTest.kt)
 
             hello, test
 
-            * [test](/im/toss/test/specter/examples/SpecDescriptionTest.kt#L11)
+            * [test](/im/toss/test/specdocs/examples/SpecDescriptionTest.kt#L11)
             """.trimIndent(),
         listOf(
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecGenerationTest]/[test-template:test(java.lang.String, java.lang.String)]/[test-template-invocation:#1]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecGenerationTest]/[test-template:test(java.lang.String, java.lang.String)]/[test-template-invocation:#1]",
                 displayName = "[1] a, A"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecGenerationTest]/[test-template:test(java.lang.String, java.lang.String)]/[test-template-invocation:#2]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecGenerationTest]/[test-template:test(java.lang.String, java.lang.String)]/[test-template-invocation:#2]",
                 displayName = "[2] b, B"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecGenerationTest]/[test-template:test(java.lang.String, java.lang.String)]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecGenerationTest]/[test-template:test(java.lang.String, java.lang.String)]",
                 displayName = "test(String, String)"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecGenerationTest]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecGenerationTest]",
                 displayName = "SpecGenerationTest"
             )
         ) to """
@@ -129,13 +129,13 @@ internal class SpecListGeneratorTest {
 
             ### test
 
-            #### specter
+            #### specdocs
 
             ##### examples
 
-            ###### [SpecGenerationTest](/im/toss/test/specter/examples/SpecGenerationTest.kt)
+            ###### [SpecGenerationTest](/im/toss/test/specdocs/examples/SpecGenerationTest.kt)
 
-            ####### [test](/im/toss/test/specter/examples/SpecGenerationTest.kt#L17)
+            ####### [test](/im/toss/test/specdocs/examples/SpecGenerationTest.kt#L17)
 
             Capitalize the given string.
 
@@ -146,19 +146,19 @@ internal class SpecListGeneratorTest {
             """.trimIndent(),
         listOf(
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecGenerationTest]/[test-template:test2(java.lang.String, java.lang.String)]/[test-template-invocation:#1]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecGenerationTest]/[test-template:test2(java.lang.String, java.lang.String)]/[test-template-invocation:#1]",
                 displayName = "[1] a, A"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecGenerationTest]/[test-template:test2(java.lang.String, java.lang.String)]/[test-template-invocation:#2]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecGenerationTest]/[test-template:test2(java.lang.String, java.lang.String)]/[test-template-invocation:#2]",
                 displayName = "[2] b, B"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecGenerationTest]/[test-template:test2(java.lang.String, java.lang.String)]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecGenerationTest]/[test-template:test2(java.lang.String, java.lang.String)]",
                 displayName = "test2(String, String)"
             ),
             TestItem(
-                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specter.examples.SpecGenerationTest]",
+                uniqueId = "[engine:junit-jupiter]/[class:im.toss.test.specdocs.examples.SpecGenerationTest]",
                 displayName = "SpecGenerationTest"
             )
         ) to """
@@ -168,13 +168,13 @@ internal class SpecListGeneratorTest {
 
             ### test
 
-            #### specter
+            #### specdocs
 
             ##### examples
 
-            ###### [SpecGenerationTest](/im/toss/test/specter/examples/SpecGenerationTest.kt)
+            ###### [SpecGenerationTest](/im/toss/test/specdocs/examples/SpecGenerationTest.kt)
 
-            ####### [test2](/im/toss/test/specter/examples/SpecGenerationTest.kt#L25)
+            ####### [test2](/im/toss/test/specdocs/examples/SpecGenerationTest.kt#L25)
 
             Capitalize the given string.
 
