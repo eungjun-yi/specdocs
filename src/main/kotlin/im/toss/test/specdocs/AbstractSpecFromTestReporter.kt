@@ -20,9 +20,7 @@ abstract class AbstractSpecFromTestReporter: TestExecutionListener {
 
     open fun baseUri(): String = ""
 
-    private fun pathToSpecDirectory() = "build/reports/specs"
-
-    private fun pathToSpecDocument() = "build/reports/specs/Specification.md"
+    open fun pathToSpecDocument() = "build/reports/specs/Specification.md"
 
     override fun executionFinished(
         testIdentifier: TestIdentifier,
@@ -32,9 +30,10 @@ abstract class AbstractSpecFromTestReporter: TestExecutionListener {
     }
 
     override fun testPlanExecutionFinished(testPlan: TestPlan) {
-        Files.createDirectories(Paths.get(pathToSpecDirectory()))
+        val pathToSpecDocument = Paths.get(pathToSpecDocument())
+        pathToSpecDocument.parent.toFile().mkdirs()
         Files.write(
-            Paths.get(pathToSpecDocument()),
+            pathToSpecDocument,
             SpecDocumentationGenerator(baseUri()).generate(treeBuilder.build()).toByteArray()
         )
     }
