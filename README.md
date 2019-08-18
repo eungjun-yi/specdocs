@@ -26,10 +26,11 @@ Document specification from unittests.
 
 3. Register it as a JUnit5 TestExecutionListener.
 
-```bash
-echo 'im.toss.test.specdocs.examples.SpecFromTestReporter' > src/test/resources/META-INF/services/org.junit.platform.launcher.TestExecutionListener
+    ```bash
+    mkdir -p src/test/resources/META-INF/services
+    echo 'im.toss.test.specdocs.examples.SpecFromTestReporter' > src/test/resources/META-INF/services/org.junit.platform.launcher.TestExecutionListener
 
-```
+    ```
 
 See [this](https://junit.org/junit5/docs/current/user-guide/#launcher-api-listeners-custom) for more details about registration of TestExecutionListener.
 
