@@ -40,7 +40,7 @@ Then you can see the generated specification document at `build/reports/specs/Sp
 
 ### Examples
 
-Run [the examples](./src/test/kotlin/im/toss/specdocs/examples) in see the generated document at `build/reports/specs/Specification.md`.
+Run [the examples](https://github.com/toss/specdocs/tree/master/src/test/kotlin/im/toss/test/specdocs/examples) in see the generated document at `build/reports/specs/Specification.md`.
 
 ## Maintainers
 
