@@ -32,11 +32,15 @@ abstract class AbstractSpecFromTestReporter: TestExecutionListener {
     override fun testPlanExecutionFinished(testPlan: TestPlan) {
         val pathToSpecDocument = Paths.get(pathToSpecDocument())
         pathToSpecDocument.parent.toFile().mkdirs()
+        val root = treeBuilder.build()
+        val baseUri = baseUri()
         Files.write(
             pathToSpecDocument,
-            SpecDocumentationGenerator(baseUri()).generate(treeBuilder.build()).toByteArray()
+            render(baseUri, root).toByteArray()
         )
     }
+
+    open fun render(baseUri: String, root: Node) = DefaultSpecDocumentationGenerator(baseUri).generate(root)
 }
 
 internal fun TestIdentifier.toTest(): TestItem {
@@ -45,3 +49,12 @@ internal fun TestIdentifier.toTest(): TestItem {
         this.displayName.removeSuffix("()")
     )
 }
+
+fun Node.findById(id: String): Node? {
+    return if (this.id == id) {
+        this
+    } else {
+        this.children.mapNotNull { it.findById(id) }.firstOrNull()
+    }
+}
+
