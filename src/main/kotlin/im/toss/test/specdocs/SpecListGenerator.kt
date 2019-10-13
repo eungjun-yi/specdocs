@@ -8,7 +8,7 @@ class SpecListGenerator(
 
     fun generate(root: Node) = generate(root, 1)
 
-    private fun generate(node: Node, depth: Int): String {
+    fun generate(node: Node, depth: Int): String {
         val lines = generateDocumentLines(node, depth)
             .fold(listOf<Line>()) { lines, line ->
                 if (lines.lastOrNull()?.type == LineType.NEWLINE && line.type == LineType.NEWLINE) {

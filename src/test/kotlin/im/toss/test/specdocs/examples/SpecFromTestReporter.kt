@@ -1,7 +1,6 @@
 package im.toss.test.specdocs.examples
 
-import im.toss.test.specdocs.AbstractSpecFromTestReporter
-import im.toss.test.specdocs.SpecFilter
+import im.toss.test.specdocs.*
 
 class SpecFromTestReporter: AbstractSpecFromTestReporter() {
     override fun baseUri() = ""
