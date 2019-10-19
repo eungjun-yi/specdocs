@@ -139,18 +139,18 @@ data class TestItem(
 )
 
 fun TestItem.toTestDescriptor() = TestDescriptor(
-    path = parseId(this.uniqueId),
+    path = path(this.uniqueId),
     title = this.displayName.parametersRemoved(),
     source = source(this.uniqueId)
 )
 
-fun source(testId: String): TestSource? {
-    val matched = uniqueIdPattern.find(testId)!!
+fun source(testIdString: String): TestSource? {
+    val testId = testId(testIdString)
 
-    val fullQualifiedName = java.net.URLDecoder.decode(matched.groupValues[2], "UTF-8")
-    val methodName = java.net.URLDecoder.decode(matched.groupValues[5], "UTF-8")
-    val dynamicContainer = java.net.URLDecoder.decode(matched.groupValues[7], "UTF-8")
-    val dynamicTest = java.net.URLDecoder.decode(matched.groupValues[9], "UTF-8")
+    val fullQualifiedName = java.net.URLDecoder.decode(testId.className ?: "", "UTF-8")
+    val methodName = java.net.URLDecoder.decode(testId.methodName() ?: "", "UTF-8")
+    val dynamicContainer = java.net.URLDecoder.decode(testId.dynamicContainer ?: "", "UTF-8")
+    val dynamicTest = java.net.URLDecoder.decode(testId.dynamicTest ?: "", "UTF-8")
 
     if (fullQualifiedName.isBlank()) {
         return null
@@ -232,18 +232,56 @@ private fun methodSource(
     )
 }
 
-fun parseId(testId: String): List<String> {
-    val matched = uniqueIdPattern.find(testId)!!
+data class TestId(
+    val className: String? = null,
+    val nestedClasses: List<String>,
+    private val method: String? = null,
+    private val testFactory: String? = null,
+    private val testTemplate: String? = null,
+    val dynamicContainer: String? = null,
+    val dynamicTest: String? = null,
+    val testTemplateInvocation: String? = null
+) {
+    fun methodName() = method ?: testFactory ?: testTemplate
+}
 
-    val klass = matched.groupValues[2]
-    val method = matched.groupValues[5]
-    val dynamicContainer = matched.groupValues[7]
-    val dynamicTest = matched.groupValues[9]
-    val testTemplateInvocation = matched.groupValues[11]
+fun testId(testId: String): TestId {
+    val namesByType = namesByType(testId)
+    return TestId(
+        className = namesByType["class"]?.firstOrNull(),
+        nestedClasses = namesByType["nested-class"] ?: emptyList(),
+        method = namesByType["method"]?.firstOrNull(),
+        testFactory = namesByType["test-factory"]?.firstOrNull(),
+        testTemplate = namesByType["test-template"]?.firstOrNull(),
+        dynamicContainer = namesByType["dynamic-container"]?.firstOrNull(),
+        dynamicTest = namesByType["dynamic-test"]?.firstOrNull(),
+        testTemplateInvocation = namesByType["test-template-invocation"]?.firstOrNull()
+    )
+}
 
-    return klass.split(".") + listOf(
-        method, dynamicContainer, dynamicTest, testTemplateInvocation
-    ).filter { it.isNotEmpty() }
+fun namesByType(testId: String): Map<String, List<String>> {
+    return typeToName(testId).groupBy(
+        { it.first },
+        { it.second }
+    ).toMap()
+}
+
+private fun typeToName(testId: String): List<Pair<String, String>> {
+    return testId.split("/").mapNotNull { segment ->
+        "\\[([^]]*):([^]]*)]".toRegex().find(segment)?.let {
+            val type = it.groupValues[1]
+            val name = it.groupValues[2]
+            type to name
+        }
+    }
+}
+
+fun path(testId: String): List<String> {
+    return with(testId(testId)) {
+        ((className ?: "").split(".") + nestedClasses + listOf(
+            methodName(), dynamicContainer, dynamicTest, testTemplateInvocation
+        )).filterNotNull().filter { it.isNotEmpty() }
+    }
 }
 
 data class TestDescriptor(
@@ -288,9 +326,6 @@ data class TestSource(
         PACKAGE, CLASS, METHOD
     }
 }
-
-private val uniqueIdPattern =
-    "\\[engine:[^]]*](/\\[class:([^]]*)])?(/\\[(method|test-factory|test-template):([^]]*)])?(/\\[dynamic-container:([^]]*)])?(/\\[dynamic-test:([^]]*)])?(/\\[test-template-invocation:([^]]*)])?".toRegex()
 
 internal fun String.parametersRemoved() = this.replace("\\(.*\\)$".toRegex(), "")
 

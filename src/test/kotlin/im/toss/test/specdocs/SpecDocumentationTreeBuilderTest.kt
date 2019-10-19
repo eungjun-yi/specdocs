@@ -110,12 +110,24 @@ internal class SpecDocumentationTreeBuilderTest {
     fun testParsingIdToPath(): List<DynamicTest> = listOf(
         dynamicTest("a.b.c.Foo.foo1") {
             val parsed =
-                parseId("[engine:junit-jupiter]/[class:a.b.c.Foo]/[method:foo1]")
+                path("[engine:junit-jupiter]/[class:a.b.c.Foo]/[method:foo1]")
             parsed.equalsTo(listOf("a", "b", "c", "Foo", "foo1"))
         },
         dynamicTest("a.b.c.d") {
-            val parsed = parseId("[engine:junit-jupiter]/[class:a.b.c.d]")
+            val parsed = path("[engine:junit-jupiter]/[class:a.b.c.d]")
             parsed.equalsTo(listOf("a", "b", "c", "d"))
+        },
+        dynamicTest("a.b.c.d.Foo (nested class)") {
+            val parsed = path("[engine:junit-jupiter]/[class:a.b.c.d]/[nested-class:Foo]")
+            parsed.equalsTo(listOf("a", "b", "c", "d", "Foo"))
+        },
+        dynamicTest("a.b.c.d.Foo.Bar (nested classes)") {
+            val parsed = path("[engine:junit-jupiter]/[class:a.b.c.d]/[nested-class:Foo]/[nested-class:Bar]")
+            parsed.equalsTo(listOf("a", "b", "c", "d", "Foo", "Bar"))
+        },
+        dynamicTest("bad path should be ignored") {
+            val parsed = path("///")
+            parsed.equalsTo(emptyList<String>())
         }
     )
 

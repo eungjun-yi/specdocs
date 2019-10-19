@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.TestFactory
 
 internal class SpecListGeneratorTest {
+
     @TestFactory
     fun generateDocument(): List<DynamicTest> = listOf(
         listOf(
@@ -183,6 +184,35 @@ internal class SpecListGeneratorTest {
             | a | A |
             | b | B |
             """.trimIndent()
+    ).map { (given, expected) ->
+        dynamicTest("Document test") {
+            val treeBuilder = SpecDocumentationTreeBuilder()
+            treeBuilder.addNodes(given)
+            val root = treeBuilder.build()
+            SpecListGenerator("").generate(root).equalsTo(expected)
+        }
+    }
+
+    @TestFactory
+    fun hideDynamicTests(): List<DynamicTest> = listOf(
+        listOf(
+            TestItem(
+                "[engine:junit-jupiter]/[class:a.b.c.Foo]/[method:foo1]",
+                "testgroup 1"
+            ),
+            TestItem(
+                "[engine:junit-jupiter]/[class:a.b.c.Foo]/[test-factory:foo1]/[dynamic-test:bar1]",
+                "subtest 1"
+            ),
+            TestItem(
+                "[engine:junit-jupiter]/[class:a.b.c.Foo]/[method:foo2]",
+                "test 2"
+            ),
+            TestItem(
+                "[engine:junit-jupiter]/[class:a.b.c.Foo]/[method:foo3]",
+                "test 3"
+            )
+        ) to "# a\n\n## b\n\n### c\n\n#### Foo\n\n* test 2\n* test 3\n\n##### testgroup 1\n\n* subtest 1"
     ).map { (given, expected) ->
         dynamicTest("Document test") {
             val treeBuilder = SpecDocumentationTreeBuilder()
