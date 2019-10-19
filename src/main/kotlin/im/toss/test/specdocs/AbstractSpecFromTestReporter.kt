@@ -6,6 +6,7 @@ import org.junit.platform.launcher.TestIdentifier
 import org.junit.platform.launcher.TestPlan
 import java.nio.file.Files
 import java.nio.file.Paths
+import kotlin.reflect.jvm.internal.impl.renderer.ClassifierNamePolicy
 
 abstract class AbstractSpecFromTestReporter: TestExecutionListener {
     private val treeBuilder: SpecDocumentationTreeBuilder =
@@ -58,3 +59,10 @@ fun Node.findById(id: String): Node? {
     }
 }
 
+fun Node.findByName(fullyQualifiedName: String): Node? {
+    return if (this.source?.fullQualifiedName == fullyQualifiedName) {
+        this
+    } else {
+        this.children.mapNotNull { it.findByName(fullyQualifiedName) }.firstOrNull()
+    }
+}
