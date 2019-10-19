@@ -147,12 +147,12 @@ fun TestItem.toTestDescriptor() = TestDescriptor(
 fun source(testId: String): TestSource? {
     val matched = uniqueIdPattern.find(testId)!!
 
-    val classPath = java.net.URLDecoder.decode(matched.groupValues[2], "UTF-8")
+    val fullQualifiedName = java.net.URLDecoder.decode(matched.groupValues[2], "UTF-8")
     val methodName = java.net.URLDecoder.decode(matched.groupValues[5], "UTF-8")
     val dynamicContainer = java.net.URLDecoder.decode(matched.groupValues[7], "UTF-8")
     val dynamicTest = java.net.URLDecoder.decode(matched.groupValues[9], "UTF-8")
 
-    if (classPath.isBlank()) {
+    if (fullQualifiedName.isBlank()) {
         return null
     }
 
@@ -168,11 +168,11 @@ fun source(testId: String): TestSource? {
 
     return try {
         val classPool = ClassPool.getDefault()
-        val ctClass = classPool.get(classPath)
+        val ctClass = classPool.get(fullQualifiedName)
         if (methodName.isNotEmpty()) {
-            methodSource(methodName, classPath, ctClass)
+            methodSource(methodName, ctClass)
         } else {
-            classSource(classPath, ctClass)
+            classSource(ctClass)
         }
     } catch (e: NotFoundException) {
         null
@@ -180,28 +180,27 @@ fun source(testId: String): TestSource? {
 }
 
 private fun classSource(
-    classPath: String,
     ctClass: CtClass
 ): TestSource {
 
     val description = ctClass.getAnnotation(SpecDescription::class.java) as SpecDescription?
 
     return TestSource(
-        filepath = filepath(classPath, ctClass),
+        filepath = filepath(ctClass),
         type = TestSource.Type.CLASS,
-        description = description?.value
+        description = description?.value,
+        fullQualifiedName = ctClass.name
     )
 }
 
-private fun filepath(classPath: String, ctClass: CtClass) =
-    filepath(classPath, ctClass.classFile.sourceFile)
+private fun filepath(ctClass: CtClass) =
+    filepath(ctClass.name, ctClass.classFile.sourceFile)
 
 private fun filepath(classPath: String, file: String?) =
     (classPath.split(".").let { it.subList(0, it.size - 1) } + file).joinToString("/")
 
 private fun methodSource(
     methodName: String,
-    classPath: String,
     ctClass: CtClass
 ): TestSource {
 
@@ -213,7 +212,7 @@ private fun methodSource(
     val methodSource = method.getAnnotation(MethodSource::class.java) as MethodSource?
     val arguments = methodSource?.let {
         it.value.first().let { sourceMethodName ->
-            Class.forName(classPath).getMethod(sourceMethodName).invoke(null) as List<Arguments>
+            Class.forName(ctClass.name).getMethod(sourceMethodName).invoke(null) as List<Arguments>
         }
     }
 
@@ -223,12 +222,13 @@ private fun methodSource(
     val descriptor = specGeneration?.value?.createInstance()
 
     return TestSource(
-        filepath = filepath(classPath, ctClass),
+        filepath = filepath(ctClass),
         type = TestSource.Type.METHOD,
         line = line,
         description = description?.value,
         descriptor = descriptor,
-        arguments = arguments
+        arguments = arguments,
+        fullQualifiedName = ctClass.name
     )
 }
 
@@ -261,6 +261,7 @@ data class TestDescriptor(
  * @property description 설명 ([SpecDescription] 으로 지정된)
  * @property descriptor  설명 생성기 ([SpecGeneration] 으로 지정된)
  * @property arguments   테스트 메서드의 인자
+ * @property fullQualifiedName   테스트의 Full Qualified Name
  */
 data class TestSource(
     val filepath: String,
@@ -268,7 +269,8 @@ data class TestSource(
     val type: Type,
     val description: String? = null,
     val descriptor: SpecDescriptor? = null,
-    val arguments: List<Arguments>? = null
+    val arguments: List<Arguments>? = null,
+    val fullQualifiedName: String = ""
 ) : Comparable<TestSource> {
     override fun compareTo(other: TestSource) = filepath.compareTo(other.filepath).let {
         if (it == 0) {
