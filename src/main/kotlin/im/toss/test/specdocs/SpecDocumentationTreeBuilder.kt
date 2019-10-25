@@ -147,7 +147,8 @@ fun TestItem.toTestDescriptor() = TestDescriptor(
 fun source(testIdString: String): TestSource? {
     val testId = testId(testIdString)
 
-    val fullQualifiedName = java.net.URLDecoder.decode(testId.className ?: "", "UTF-8")
+    val segments = (listOf(testId.className) + testId.nestedClasses).map { java.net.URLDecoder.decode(it ?: "", "UTF-8") }
+    val fullQualifiedName = segments.joinToString("$")
     val methodName = java.net.URLDecoder.decode(testId.methodName() ?: "", "UTF-8")
     val dynamicContainer = java.net.URLDecoder.decode(testId.dynamicContainer ?: "", "UTF-8")
     val dynamicTest = java.net.URLDecoder.decode(testId.dynamicTest ?: "", "UTF-8")

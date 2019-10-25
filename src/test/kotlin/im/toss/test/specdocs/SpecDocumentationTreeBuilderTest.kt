@@ -125,6 +125,10 @@ internal class SpecDocumentationTreeBuilderTest {
             val parsed = path("[engine:junit-jupiter]/[class:a.b.c.d]/[nested-class:Foo]/[nested-class:Bar]")
             parsed.equalsTo(listOf("a", "b", "c", "d", "Foo", "Bar"))
         },
+        dynamicTest("a.b.c.d.Foo.bar() (nested classes)") {
+            val parsed = path("[engine:junit-jupiter]/[class:a.b.c.d]/[nested-class:Foo]/[method:bar()]")
+            parsed.equalsTo(listOf("a", "b", "c", "d", "Foo", "bar()"))
+        },
         dynamicTest("bad path should be ignored") {
             val parsed = path("///")
             parsed.equalsTo(emptyList<String>())
