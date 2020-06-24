@@ -22,6 +22,7 @@ class SpecDocumentationTreeBuilder(
         return this.merge(
             this.nodes
                 .asSequence()
+                .filterNotNull()
                 .map(TestItem::toTestDescriptor)
                 .filterNot(TestDescriptor::pathIsEmpty) // Remove unnecessary items like JUnit Vintage, ...
                 .filter(::matchesFilter)
