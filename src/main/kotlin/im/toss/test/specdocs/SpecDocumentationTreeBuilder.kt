@@ -20,29 +20,27 @@ class SpecDocumentationTreeBuilder(
 
     fun build(): Node {
         return this.merge(
-            this.nodes.asSequence().map {
-                it.toTestDescriptor()
-            }.filterNot {
-                // Remove unnecessary items like JUnit Vintage, ...
-                it.path == listOf("")
-            }.filter {
-                val path = it.path
-                if (filter.includes != null) {
-                    filter.includes.any { path.startsWith(it.split(".")) }
-                } else {
-                    true
-                }
-            }.map {
-                it.copy(
-                    path = it.path.basePathRemoved()
-                )
-            }.toList()
+            this.nodes
+                .asSequence()
+                .map(TestItem::toTestDescriptor)
+                .filterNot(TestDescriptor::pathIsEmpty) // Remove unnecessary items like JUnit Vintage, ...
+                .filter(::matchesFilter)
+                .map(::basePathRemoved)
+                .toList()
         ).sorted()
+    }
+
+    private fun matchesFilter(
+        testDescriptor: TestDescriptor
+    ): Boolean {
+        return filter.includes?.any { testDescriptor.path.startsWith(it.split(".")) } ?: true
     }
 
     fun merge(items: List<TestDescriptor>) = items.fold(Node()) { root, item ->
         merge(root, item)
     }
+
+    private fun basePathRemoved(it: TestDescriptor) = it.copy(path = it.path.basePathRemoved())
 
     private fun List<String>.basePathRemoved() = this.basePathRemoved(basePaths)
 
@@ -346,3 +344,5 @@ internal fun List<String>.basePathRemoved(
     .filter { this.startsWith(it) }
     .map { this.subList(it.size, this.size) }
     .elementAtOrElse(0) { this }
+
+private fun TestDescriptor.pathIsEmpty() = path == listOf("")
